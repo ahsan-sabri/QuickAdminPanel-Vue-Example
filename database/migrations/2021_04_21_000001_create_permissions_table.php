@@ -6,13 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePermissionsTable extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('permissions', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->timestamps();
             $table->softDeletes();
         });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('permissions');
     }
 }

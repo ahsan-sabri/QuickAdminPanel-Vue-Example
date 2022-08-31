@@ -5,12 +5,13 @@ namespace App\Models;
 use \DateTimeInterface;
 use App\Support\HasAdvancedFilter;
 use Carbon\Carbon;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,6 +19,7 @@ class User extends Authenticatable
     use SoftDeletes;
     use Notifiable;
     use HasFactory;
+    use HasApiTokens;
 
     public $table = 'users';
 
@@ -26,7 +28,7 @@ class User extends Authenticatable
         'password',
     ];
 
-    protected $orderable = [
+    protected array $orderable = [
         'id',
         'name',
         'email',
@@ -40,10 +42,11 @@ class User extends Authenticatable
         'deleted_at',
     ];
 
-    protected $filterable = [
+    protected array $filterable = [
         'id',
         'name',
         'email',
+        'address',
         'email_verified_at',
         'roles.title',
     ];
@@ -51,6 +54,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'address',
+        'bio',
         'email_verified_at',
         'password',
         'remember_token',
@@ -59,34 +64,34 @@ class User extends Authenticatable
         'deleted_at',
     ];
 
-    public function getIsAdminAttribute()
+    public function getIsAdminAttribute(): bool
     {
         return $this->roles()->where('title', 'Admin')->exists();
     }
 
-    public function getEmailVerifiedAtAttribute($value)
+    public function getEmailVerifiedAtAttribute($value): ?string
     {
         return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('project.datetime_format')) : null;
     }
 
-    public function setEmailVerifiedAtAttribute($value)
+    public function setEmailVerifiedAtAttribute($value): void
     {
         $this->attributes['email_verified_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
-    public function setPasswordAttribute($input)
+    public function setPasswordAttribute($input): void
     {
         if ($input) {
             $this->attributes['password'] = Hash::needsRehash($input) ? Hash::make($input) : $input;
         }
     }
 
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
 
-    protected function serializeDate(DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format('Y-m-d H:i:s');
     }

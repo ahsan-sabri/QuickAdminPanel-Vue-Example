@@ -3,18 +3,18 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 
 class StoreUserRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
         return Gate::allows('user_create');
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => [
@@ -23,6 +23,7 @@ class StoreUserRequest extends FormRequest
             ],
             'email' => [
                 'required',
+                'email',
                 'unique:users',
             ],
             'password' => [

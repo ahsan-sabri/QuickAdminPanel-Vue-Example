@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class AbilitiesController extends Controller
 {
-    public function index()
+    public function index(): AbilityResource
     {
         $permissions = auth()->user()->roles()->with('permissions')->get()
             ->pluck('permissions')

@@ -1,6 +1,8 @@
 <?php
 
-Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:sanctum']], function () {
+use Illuminate\Support\Facades\Route;
+
+Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:sanctum']], static function () {
     // Abilities
     Route::apiResource('abilities', 'AbilitiesController', ['only' => ['index']]);
 
@@ -16,13 +18,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Users
     Route::resource('users', 'UsersApiController');
+});
 
-    // Contact Company
-    Route::resource('contact-companies', 'ContactCompanyApiController');
-
-    // Contact Contacts
-    Route::resource('contact-contacts', 'ContactContactsApiController');
-
-    // Transactions
-    Route::resource('transactions', 'TransactionsApiController');
+Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Auth'], static function () {
+    Route::post('login', 'RegisterController@login')->name('login');
+    Route::post('register', 'RegisterController@register')->name('register');
+    Route::get('me', 'RegisterController@profile')->name('profile')->middleware('auth:sanctum');
+    Route::post('profile/update', 'RegisterController@profileUpdate')->name('profile.update')->middleware('auth:sanctum');
 });
