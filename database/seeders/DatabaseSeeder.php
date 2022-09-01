@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 namespace Database\Seeders;
 
@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
             PermissionRoleTableSeeder::class,
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
+            LanguageTableSeeder::class,
+            PageGroupTableSeeder::class,
         ]);
     }
 }

@@ -93,7 +93,32 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 17,
-                'title' => 'profile_edit',
+                'title' => 'dashboard_access',
+                'created_at'     => Carbon::now()
+            ],
+            [
+                'id'    => 18,
+                'title' => 'profile_access',
+                'created_at'     => Carbon::now()
+            ],
+            [
+                'id'    => 19,
+                'title' => 'cms_access',
+                'created_at'     => Carbon::now()
+            ],
+            [
+                'id'    => 20,
+                'title' => 'access_control_management_access',
+                'created_at'     => Carbon::now()
+            ],
+            [
+                'id'    => 21,
+                'title' => 'locale_management_access',
+                'created_at'     => Carbon::now()
+            ],
+            [
+                'id'    => 22,
+                'title' => 'language_access',
                 'created_at'     => Carbon::now()
             ],
         ];
