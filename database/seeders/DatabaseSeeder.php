@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Tikweb\TikCmsApi\Database\Seeders\LanguageTableSeeder;
+use Tikweb\TikCmsApi\Database\Seeders\PageGroupTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +17,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
             LanguageTableSeeder::class,
-            PageGroupTableSeeder::class,
+            PageGroupTableSeeder::class
         ]);
     }
 }
