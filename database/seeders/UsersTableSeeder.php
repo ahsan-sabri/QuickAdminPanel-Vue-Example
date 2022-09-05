@@ -12,7 +12,6 @@ class UsersTableSeeder extends Seeder
     {
         $users = [
             [
-                'id'             => 1,
                 'name'           => 'Admin',
                 'email'          => 'admin@museiq.com',
                 'password'       => bcrypt('password'),

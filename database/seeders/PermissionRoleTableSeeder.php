@@ -12,9 +12,11 @@ class PermissionRoleTableSeeder extends Seeder
     {
         $admin_permissions = Permission::all();
         Role::findOrFail(1)->permissions()->sync($admin_permissions->pluck('id'));
-        $user_permissions = $admin_permissions->filter(function ($permission) {
+        $common_permissions = $admin_permissions->filter(function ($permission) {
             return str_starts_with($permission->title, 'dashboard_') || str_starts_with($permission->title, 'profile_');
         });
-        Role::findOrFail(2)->permissions()->sync($user_permissions);
+        Role::findOrFail(2)->permissions()->sync($common_permissions);
+        Role::findOrFail(3)->permissions()->sync($common_permissions);
+        Role::findOrFail(4)->permissions()->sync($common_permissions);
     }
 }

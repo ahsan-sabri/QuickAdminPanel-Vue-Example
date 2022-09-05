@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class LocalesController extends Controller
 {
-    public function languages()
+    public function languages(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'languages' => config('project.supported_languages'),
@@ -15,7 +15,7 @@ class LocalesController extends Controller
         ]);
     }
 
-    public function messages()
+    public function messages(): \Illuminate\Http\JsonResponse
     {
         return response()->json([
             'auth'       => trans('auth'),

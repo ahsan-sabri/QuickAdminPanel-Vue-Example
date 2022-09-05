@@ -12,12 +12,18 @@ class RolesTableSeeder extends Seeder
     {
         $roles = [
             [
-                'id'    => 1,
                 'title' => 'Admin',
                 'created_at'     => Carbon::now()
             ],
             [
-                'id'    => 2,
+                'title' => 'Producer',
+                'created_at'     => Carbon::now()
+            ],
+            [
+                'title' => 'Artist',
+                'created_at'     => Carbon::now()
+            ],
+            [
                 'title' => 'User',
                 'created_at'     => Carbon::now()
             ],

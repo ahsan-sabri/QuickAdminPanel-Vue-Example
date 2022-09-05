@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
             LanguageTableSeeder::class,
-            PageGroupTableSeeder::class
+            PageGroupTableSeeder::class,
+            MuseiqHomepageSeeder::class,
         ]);
     }
 }

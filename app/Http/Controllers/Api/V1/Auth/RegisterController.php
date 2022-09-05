@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Resources\Admin\UserResource;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\Auth\BaseController as BaseController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class RegisterController extends BaseController
 {
@@ -23,7 +27,7 @@ class RegisterController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users',
+            'email'=>'required|email|unique:users,email,NULL,id,deleted_at,NULL',
             'password' => 'required',
             'c_password' => 'required|same:password',
             'roles' => 'required|array',
@@ -34,14 +38,32 @@ class RegisterController extends BaseController
             return $this->sendError('Validation Error.', (array)$validator->errors());
         }
 
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $user->roles()->sync($request->input('roles.*.id', []));
-        $success['token'] =  $user->createToken('auth_token')->plainTextToken;
-        $success['name'] =  $user->name;
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+            $input['password'] = bcrypt($input['password']);
+            $user = User::create($input);
+            $user->roles()->sync($request->input('roles.*.id', []));
 
-        return $this->sendResponse($success, 'User register successfully.');
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'data'    => new UserResource($user),
+                'token'    => $user->createToken('auth_token')->plainTextToken,
+                'name'    => $user->name,
+                'message' => "Registered successfully!",
+            ])
+                ->setStatusCode(ResponseAlias::HTTP_CREATED);
+        }
+        catch(Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'issue' => $e->getMessage(),
+                'message' => "Something went wrong!"
+            ])
+                ->setStatusCode(ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
