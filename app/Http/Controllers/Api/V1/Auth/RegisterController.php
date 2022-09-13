@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\StoreAvatarRequest;
 use App\Http\Resources\Admin\UserResource;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -123,6 +124,42 @@ class RegisterController extends BaseController
         return $this->sendError('Password is incorrect!', [], 200);
     }
 
+    public function avatarUpdate(StoreAvatarRequest $request): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::with(['roles'])->find(auth()->user()->id);
+
+            if($request->file('image')) {
+                $file = $request->file('image');
+                $filename = time() . '.' . $file->getClientOriginalName();
+                $path = public_path('images/avatar/');
+                $file->move($path,$filename);
+                $user->image = $filename;
+                $user->save();
+            }
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'data'    => new UserResource($user),
+                'message' => "Avatar updated successfully!",
+            ])
+            ->setStatusCode(ResponseAlias::HTTP_OK);
+        }
+        catch(Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'issue' => $e->getMessage(),
+                'message' => "Something went wrong!"
+            ])
+            ->setStatusCode(ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
     public function updateRequestValidate($request): JsonResponse|bool
     {
         $validator = Validator::make($request->all(), [
@@ -136,4 +173,15 @@ class RegisterController extends BaseController
         }
         return true;
     }
+//    public function updateAvatarRequestValidate($request): JsonResponse|bool
+//    {
+//        $validator = Validator::make($request->all(), [
+//            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+//        ]);
+//
+//        if($validator->fails()){
+//            return $this->sendError('Validation Error.', (array)$validator->errors());
+//        }
+//        return true;
+//    }
 }

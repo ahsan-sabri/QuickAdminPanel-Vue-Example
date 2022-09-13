@@ -24,6 +24,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Auth'], s
     // profile
     Route::get('me', 'RegisterController@profile')->name('profile')->middleware('auth:sanctum');
     Route::post('profile/update', 'RegisterController@profileUpdate')->name('profile.update')->middleware('auth:sanctum');
+    Route::post('profile/image/update', 'RegisterController@avatarUpdate')->name('avatar.update')->middleware('auth:sanctum');
 });
 
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin'], static function () {
